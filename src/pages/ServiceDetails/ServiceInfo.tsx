@@ -49,7 +49,7 @@ class ServiceInfo extends React.Component<ServiceId, ServiceInfoState> {
     this.fetchHealth(this.props);
   }
 
-  componentWillReceiveProps(nextProps: ServiceId) {
+  UNSAFE_componentWillReceiveProps(nextProps: ServiceId) {
     this.fetchServiceDetails(nextProps);
     this.fetchHealth(nextProps);
   }

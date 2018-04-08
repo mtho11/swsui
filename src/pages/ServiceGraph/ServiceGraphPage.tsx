@@ -79,7 +79,7 @@ export default class ServiceGraphPage extends React.Component<
     this.loadGraphDataFromBackend();
   }
 
-  componentWillReceiveProps(nextProps: RouteComponentProps<ServiceGraphPageProps>) {
+  UNSAFE_componentWillReceiveProps(nextProps: RouteComponentProps<ServiceGraphPageProps>) {
     const nextNamespace = { name: nextProps.match.params.namespace };
     const { graphDuration: nextDuration, graphLayout: nextLayout } = this.parseProps(nextProps.location.search);
 

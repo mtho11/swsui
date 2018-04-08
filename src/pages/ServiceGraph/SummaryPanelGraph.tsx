@@ -41,7 +41,7 @@ export default class SummaryPanelGraph extends React.Component<SummaryPanelPropT
     }
   }
 
-  componentWillReceiveProps(nextProps: SummaryPanelPropType) {
+  UNSAFE_componentWillReceiveProps(nextProps: SummaryPanelPropType) {
     if (nextProps.data.summaryTarget !== this.props.data.summaryTarget) {
       this.updateRpsChart(nextProps);
     }

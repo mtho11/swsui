@@ -36,7 +36,7 @@ export default class SummaryPanelEdge extends React.Component<SummaryPanelPropTy
     this.updateRpsChart(this.props);
   }
 
-  componentWillReceiveProps(nextProps: SummaryPanelPropType) {
+  UNSAFE_componentWillReceiveProps(nextProps: SummaryPanelPropType) {
     if (nextProps.data.summaryTarget !== this.props.data.summaryTarget) {
       this.updateRpsChart(nextProps);
     }

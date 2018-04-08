@@ -28,7 +28,7 @@ class ServiceHealth extends React.Component<Props, {}> {
     this.onGetProps(props);
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  UNSAFE_componentWillReceiveProps(nextProps: Props) {
     this.onGetProps(nextProps);
   }
 

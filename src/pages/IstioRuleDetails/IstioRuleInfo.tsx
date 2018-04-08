@@ -30,7 +30,7 @@ class IstioRuleInfo extends React.Component<RuleId, RuleInfoState> {
     this.fetchIstioRuleDetails(this.props);
   }
 
-  componentWillReceiveProps(nextProps: RuleId) {
+  UNSAFE_componentWillReceiveProps(nextProps: RuleId) {
     this.fetchIstioRuleDetails(nextProps);
   }
 

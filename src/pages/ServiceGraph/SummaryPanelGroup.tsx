@@ -39,7 +39,7 @@ export default class SummaryPanelGroup extends React.Component<SummaryPanelPropT
     this.updateRpsCharts(this.props);
   }
 
-  componentWillReceiveProps(nextProps: SummaryPanelPropType) {
+  UNSAFE_componentWillReceiveProps(nextProps: SummaryPanelPropType) {
     if (nextProps.data.summaryTarget !== this.props.data.summaryTarget) {
       this.updateRpsCharts(nextProps);
     }

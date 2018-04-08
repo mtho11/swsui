@@ -46,7 +46,7 @@ export default class SummaryPanelNode extends React.Component<SummaryPanelPropTy
     this.fetchRequestCountMetrics(this.props);
   }
 
-  componentWillReceiveProps(nextProps: SummaryPanelPropType) {
+  UNSAFE_componentWillReceiveProps(nextProps: SummaryPanelPropType) {
     if (nextProps.data.summaryTarget !== this.props.data.summaryTarget) {
       this.fetchRequestCountMetrics(nextProps);
     }
