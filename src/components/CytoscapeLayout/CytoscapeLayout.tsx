@@ -200,8 +200,8 @@ export class CytoscapeLayout extends React.Component<CytoscapeLayoutProps, Cytos
 }
 
 const mapStateToProps = (state: KialiAppState) => ({
-  showEdgeLabels: state.serviceGraphState.showEdgeLabels,
-  showNodeLabels: state.serviceGraphState.showNodeLabels
+  showEdgeLabels: state.serviceGraphFilterState.showEdgeLabels,
+  showNodeLabels: state.serviceGraphFilterState.showNodeLabels
 });
 
 const CytoscapeLayoutConnected = connect(mapStateToProps, null)(CytoscapeLayout);

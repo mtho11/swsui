@@ -1,11 +1,11 @@
 import { combineReducers } from 'redux';
 
-import namespaces from './namespaces';
-import serviceGraphState from './ServiceGraphState';
+import namespaces from './Namespaces';
+import serviceGraphFilterState from './ServiceGraphFilterState';
 
 const rootReducer = combineReducers({
   namespaces,
-  serviceGraphState
+  serviceGraphFilterState: serviceGraphFilterState
 });
 
 export default rootReducer;
