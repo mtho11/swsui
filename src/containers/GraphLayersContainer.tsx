@@ -5,6 +5,8 @@ import { bindActionCreators } from 'redux';
 import { serviceGraphFilterActions } from '../actions/ServiceGraphFilterActions';
 import { KialiAppState, ServiceGraphFilterState } from '../store/Store';
 import { style } from 'typestyle';
+import GraphFilter from '../components/GraphFilter/GraphFilter';
+import ToolbarDropdown from '../components/ToolbarDropdown/ToolbarDropdown';
 
 interface ServiceGraphDispatch {
   // Dispatch methods
@@ -14,6 +16,7 @@ interface ServiceGraphDispatch {
   toggleGraphRouteRules(): void;
   toggleGraphMissingSidecars(): void;
   toggleTrafficAnimation(): void;
+  setGraphEdgeLabelMode(edgeMode: any): void;
 }
 
 // inherit all of our Reducer state section  and Dispatch methods for redux
@@ -23,6 +26,7 @@ type GraphLayersProps = ServiceGraphDispatch & ServiceGraphFilterState;
 const mapStateToProps = (state: KialiAppState) => ({
   showLegend: state.serviceGraph.filterState.showLegend,
   showNodeLabels: state.serviceGraph.filterState.showNodeLabels,
+  edgeLabelMode: state.serviceGraph.filterState.edgeLabelMode,
   showCircuitBreakers: state.serviceGraph.filterState.showCircuitBreakers,
   showRouteRules: state.serviceGraph.filterState.showRouteRules,
   showMissingSidecars: state.serviceGraph.filterState.showMissingSidecars,
@@ -58,6 +62,7 @@ export const GraphLayers: React.SFC<GraphLayersProps> = props => {
     showCircuitBreakers,
     showRouteRules,
     showNodeLabels,
+    edgeLabelMode,
     showMissingSidecars,
     showTrafficAnimation
   } = props;
@@ -67,6 +72,7 @@ export const GraphLayers: React.SFC<GraphLayersProps> = props => {
     toggleGraphCircuitBreakers,
     toggleGraphRouteRules,
     toggleGraphNodeLabels,
+    setGraphEdgeLabelMode,
     toggleGraphMissingSidecars,
     toggleTrafficAnimation
   } = props;
@@ -119,7 +125,58 @@ export const GraphLayers: React.SFC<GraphLayersProps> = props => {
       </label>
     </div>
   ));
-  const popover = <Popover id="layers-popover">{toggleItems}</Popover>;
+
+  // const edges: VisibilityLayersType[] = [
+  //   {
+  //     id: 'edgeHide',
+  //     labelText: 'Hide',
+  //     value: showTrafficAnimation,
+  //     onChange: setGraphEdgeLabelMode('AAA')
+  //   },
+  //   {
+  //     id: 'edgeRequestPerSecond',
+  //     labelText: 'Requests Per Second',
+  //     value: showTrafficAnimation,
+  //     onChange: setGraphEdgeLabelMode('BBB')
+  //   },
+  //   {
+  //     id: 'edgeRequestPercentOfTotal',
+  //     labelText: 'Requests percent of total',
+  //     value: showTrafficAnimation,
+  //     onChange: setGraphEdgeLabelMode('CCC')
+  //   },
+  //   {
+  //     id: 'edgeLatency95thPercentile',
+  //     labelText: 'Latency 95th Percentile',
+  //     value: showTrafficAnimation,
+  //     onChange: toggleTrafficAnimation
+  //   }
+  // ];
+
+  // const edgeItemStyle = style({ width: '100%' });
+  // const edgeItems = edges.map((item: VisibilityLayersType) => (
+  //   <div key={item.id}>
+  //     <Button className={edgeItemStyle} key={item.id}>
+  //       {item.labelText}
+  //     </Button>
+  //   </div>
+  // ));
+
+  const popover = (
+    <Popover id="layers-popover">
+      {toggleItems}
+      <div>Edge Labels:{edgeLabelMode}</div>
+      <ToolbarDropdown
+        id={'graph_filter_edges'}
+        disabled={false}
+        handleSelect={setGraphEdgeLabelMode('AAA')}
+        nameDropdown={'Edge Labels'}
+        initialValue={GraphFilter.EDGE_LABEL_MODES[edgeLabelMode]}
+        initialLabel={GraphFilter.EDGE_LABEL_MODES[edgeLabelMode]}
+        options={GraphFilter.EDGE_LABEL_MODES}
+      />
+    </Popover>
+  );
 
   return (
     <OverlayTrigger overlay={popover} placement="bottom" trigger={['click']} rootClose={true}>
