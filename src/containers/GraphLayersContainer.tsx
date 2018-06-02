@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, Icon, OverlayTrigger, Popover } from 'patternfly-react';
+import { ButtonGroup, Button, FormGroup, Icon, OverlayTrigger, Popover } from 'patternfly-react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { serviceGraphFilterActions } from '../actions/ServiceGraphFilterActions';
@@ -119,7 +119,44 @@ export const GraphLayers: React.SFC<GraphLayersProps> = props => {
       </label>
     </div>
   ));
-  const popover = <Popover id="layers-popover">{toggleItems}</Popover>;
+
+  const edges: VisibilityLayersType[] = [
+    {
+      id: 'edgeHide',
+      labelText: 'Hide',
+      value: showTrafficAnimation,
+      onChange: toggleTrafficAnimation
+    },
+    {
+      id: 'edgeRequestPerSecond',
+      labelText: 'Requests Per Second',
+      value: showTrafficAnimation,
+      onChange: toggleTrafficAnimation
+    },
+    {
+      id: 'edgeRequestPercentOfTotal',
+      labelText: 'Requests percent of total',
+      value: showTrafficAnimation,
+      onChange: toggleTrafficAnimation
+    },
+    {
+      id: 'edgeLatency95thPercentile',
+      labelText: 'Latency 95th Percentile',
+      value: showTrafficAnimation,
+      onChange: toggleTrafficAnimation
+    }
+  ];
+
+  const edgeItems = edges.map((item: VisibilityLayersType) => <Button key={item.id}>{item.labelText}</Button>);
+
+  const popover = (
+    <Popover id="layers-popover">
+      {toggleItems}
+      <FormGroup>
+        <ButtonGroup>{edgeItems}</ButtonGroup>
+      </FormGroup>
+    </Popover>
+  );
 
   return (
     <OverlayTrigger overlay={popover} placement="bottom" trigger={['click']} rootClose={true}>
