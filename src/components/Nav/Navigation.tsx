@@ -104,9 +104,14 @@ class Navigation extends React.Component<PropsType> {
     store.subscribe(() => {
       document.documentElement.className = this.props.authenticated ? 'layout-pf layout-pf-fixed' : 'login-pf';
     });
+
     return this.props.authenticated ? (
       <>
-        <VerticalNav setControlledState={this.setControlledState} navCollapsed={this.props.navCollapsed}>
+        <VerticalNav
+          className="kiali-vertical-nav"
+          setControlledState={this.setControlledState}
+          navCollapsed={this.props.navCollapsed}
+        >
           <VerticalNav.Masthead title="Kiali">
             <VerticalNav.Brand iconImg={KialiLogo} />
             <PfSpinnerContainer />
