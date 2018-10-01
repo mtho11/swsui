@@ -5,7 +5,3 @@ import { MessageCenterActions } from '../actions/MessageCenterActions';
 export const add = (content: string, group?: string, type?: MessageType) => {
   store.dispatch(MessageCenterActions.addMessage(content, group, type));
 };
-
-export const toggleMessageCenter = () => {
-  store.dispatch(MessageCenterActions.toggleMessageCenter);
-};

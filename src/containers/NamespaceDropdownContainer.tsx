@@ -18,6 +18,8 @@ const mapDispatchToProps = (dispatch: any) => {
       dispatch(NamespaceActions.fetchNamespacesIfNeeded());
     },
     onSelect: (namespace: Namespace) => {
+      console.log('NamespaceDropdownContainer.onSelect');
+      //       dispatch(NamespaceActions.setPreviousNamespace(namespace));
       dispatch(NamespaceActions.setActiveNamespace(namespace));
     }
   };

@@ -7,6 +7,7 @@ describe('Namespaces reducer', () => {
     expect(namespaceState(undefined, {})).toEqual({
       isFetching: false,
       activeNamespace: { name: 'all' },
+      previousNamespace: { name: 'all' },
       items: ['all']
     });
   });
@@ -14,6 +15,7 @@ describe('Namespaces reducer', () => {
   it('should handle NAMESPACE_REQUEST_STARTED', () => {
     const currentState = {
       activeNamespace: { name: 'all' },
+      previousNamespace: { name: 'all' },
       isFetching: false,
       items: [],
       lastUpdated: undefined
@@ -23,6 +25,7 @@ describe('Namespaces reducer', () => {
     };
     const expectedState = {
       activeNamespace: { name: 'all' },
+      previousNamespace: { name: 'all' },
       isFetching: true,
       items: [],
       lastUpdated: undefined
@@ -32,6 +35,7 @@ describe('Namespaces reducer', () => {
   it('should handle NAMESPACE_FAILED', () => {
     const currentState = {
       activeNamespace: { name: 'all' },
+      previousNamespace: { name: 'all' },
       isFetching: true,
       items: []
     };
@@ -40,6 +44,7 @@ describe('Namespaces reducer', () => {
     };
     const expectedState = {
       activeNamespace: { name: 'all' },
+      previousNamespace: { name: 'all' },
       isFetching: false,
       items: []
     };
@@ -49,6 +54,7 @@ describe('Namespaces reducer', () => {
     const currentDate = new Date();
     const currentState = {
       activeNamespace: { name: 'all' },
+      previousNamespace: { name: 'all' },
       isFetching: true,
       items: ['old', 'namespace'],
       lastUpdated: undefined
@@ -60,6 +66,7 @@ describe('Namespaces reducer', () => {
     };
     const expectedState = {
       activeNamespace: { name: 'all' },
+      previousNamespace: { name: 'all' },
       isFetching: false,
       items: ['a', 'b', 'c'],
       lastUpdated: currentDate

@@ -13,7 +13,6 @@ import UserDropdown from '../../containers/UserDropdownContainer';
 import LoginPage from '../../containers/LoginPageContainer';
 import { store } from '../../store/ConfigStore';
 import PfSpinnerContainer from '../../containers/PfSpinnerContainer';
-import NamespaceDropdownContainer from '../../containers/NamespaceDropdownContainer';
 import * as API from '../../services/Api';
 import { authentication } from '../../utils/Authentication';
 import { KialiLogo } from '../../config';
@@ -121,10 +120,6 @@ class Navigation extends React.Component<PropsType> {
               <HelpDropdown />
               <UserDropdown />
             </VerticalNav.IconBar>
-            <div className="navbar-iconic nav navbar-nav navbar-right">
-              {/*<div className="navbar-iconic nav navbar-nav navbar-left">*/}
-              <NamespaceDropdownContainer />
-            </div>
             <MessageCenter drawerTitle="Message Center" />
           </VerticalNav.Masthead>
           {this.renderMenuItems()}

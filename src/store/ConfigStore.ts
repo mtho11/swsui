@@ -3,16 +3,17 @@ import { KialiAppState } from './Store';
 import { persistStore, persistReducer } from 'redux-persist';
 import rootReducer from '../reducers';
 import thunk from 'redux-thunk';
+import { logger } from 'redux-logger';
 
 // defaults to localStorage for web and AsyncStorage for react-native
 import storage from 'redux-persist/lib/storage';
 import { INITIAL_GLOBAL_STATE } from '../reducers/GlobalState';
-import { INITIAL_NAMESPACE_STATE } from '../reducers/Namespaces';
 import { INITIAL_LOGIN_STATE } from '../reducers/LoginState';
 import { INITIAL_GRAPH_STATE } from '../reducers/GraphDataState';
 import { INITIAL_USER_SETTINGS_STATE } from '../reducers/UserSettingsState';
 import { INITIAL_MESSAGE_CENTER_STATE } from '../reducers/MessageCenter';
 import { INITIAL_STATUS_STATE } from '../reducers/HelpDropdownState';
+import { INITIAL_NAMESPACE_STATE } from '../reducers/NamespaceState';
 
 declare const window;
 
@@ -22,12 +23,18 @@ const persistConfig = {
   whitelist: ['authentication', 'statusState', 'userSettings']
 };
 
+// const logger = createLogger({
+//   duration: true,
+//   collapsed: true,
+//   diff: true
+// });
+
 const composeEnhancers =
   (process.env.NODE_ENV === 'development' && window && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
 
 const configureStore = (initialState: KialiAppState) => {
   // configure middlewares
-  const middlewares = [thunk];
+  const middlewares = [thunk, logger];
   // compose enhancers
   const enhancer = composeEnhancers(applyMiddleware(...middlewares));
   // persist reducers
