@@ -4,6 +4,7 @@ import { persistStore, persistReducer } from 'redux-persist';
 import rootReducer from '../reducers';
 import thunk from 'redux-thunk';
 // import { createLogger } from 'redux-logger';
+import { logger } from 'redux-logger';
 
 // defaults to localStorage for web and AsyncStorage for react-native
 import storage from 'redux-persist/lib/storage';
@@ -43,7 +44,7 @@ const composeEnhancers =
 
 const configureStore = (initialState: KialiAppState) => {
   // configure middlewares
-  const middlewares = [thunk];
+  const middlewares = [thunk, logger];
   // compose enhancers
   const enhancer = composeEnhancers(applyMiddleware(...middlewares));
   // persist reducers
