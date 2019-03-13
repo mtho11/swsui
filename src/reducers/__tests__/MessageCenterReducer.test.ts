@@ -73,6 +73,7 @@ describe('MessageCenter reducer', () => {
               show_notification: true,
               content: 'my new message',
               type: MessageType.WARNING,
+              count: 1,
               created: date
             }
           ],
@@ -104,6 +105,7 @@ describe('MessageCenter reducer', () => {
                   show_notification: true,
                   content: 'my new message',
                   type: MessageType.WARNING,
+                  count: 1,
                   created: date
                 },
                 {
@@ -112,6 +114,7 @@ describe('MessageCenter reducer', () => {
                   show_notification: false,
                   content: 'other message',
                   type: MessageType.ERROR,
+                  count: 1,
                   created: date
                 },
                 {
@@ -120,6 +123,7 @@ describe('MessageCenter reducer', () => {
                   show_notification: false,
                   content: 'other',
                   type: MessageType.INFO,
+                  count: 1,
                   created: date
                 }
               ],
@@ -144,6 +148,7 @@ describe('MessageCenter reducer', () => {
               show_notification: false,
               content: 'other message',
               type: MessageType.ERROR,
+              count: 1,
               created: date
             }
           ],
@@ -175,6 +180,7 @@ describe('MessageCenter reducer', () => {
                   show_notification: true,
                   content: 'my new message',
                   type: MessageType.WARNING,
+                  count: 1,
                   created: date
                 },
                 {
@@ -183,6 +189,7 @@ describe('MessageCenter reducer', () => {
                   show_notification: false,
                   content: 'other message',
                   type: MessageType.ERROR,
+                  count: 1,
                   created: date
                 },
                 {
@@ -191,6 +198,7 @@ describe('MessageCenter reducer', () => {
                   show_notification: false,
                   content: 'other',
                   type: MessageType.INFO,
+                  count: 1,
                   created: date
                 }
               ],
@@ -215,6 +223,7 @@ describe('MessageCenter reducer', () => {
               show_notification: false,
               content: 'my new message',
               type: MessageType.WARNING,
+              count: 1,
               created: date
             },
             {
@@ -223,6 +232,7 @@ describe('MessageCenter reducer', () => {
               show_notification: false,
               content: 'other message',
               type: MessageType.ERROR,
+              count: 1,
               created: date
             },
             {
@@ -231,6 +241,7 @@ describe('MessageCenter reducer', () => {
               show_notification: false,
               content: 'other',
               type: MessageType.INFO,
+              count: 1,
               created: date
             }
           ],
@@ -262,6 +273,7 @@ describe('MessageCenter reducer', () => {
                   show_notification: true,
                   content: 'my new message',
                   type: MessageType.WARNING,
+                  count: 1,
                   created: date
                 },
                 {
@@ -270,6 +282,7 @@ describe('MessageCenter reducer', () => {
                   show_notification: true,
                   content: 'other message',
                   type: MessageType.ERROR,
+                  count: 1,
                   created: date
                 }
               ],
@@ -294,6 +307,7 @@ describe('MessageCenter reducer', () => {
               show_notification: false,
               content: 'my new message',
               type: MessageType.WARNING,
+              count: 1,
               created: date
             },
             {
@@ -302,6 +316,7 @@ describe('MessageCenter reducer', () => {
               show_notification: true,
               content: 'other message',
               type: MessageType.ERROR,
+              count: 1,
               created: date
             }
           ],
