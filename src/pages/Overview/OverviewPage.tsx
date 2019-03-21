@@ -103,7 +103,7 @@ class OverviewPage extends React.Component<OverviewProps, State> {
       .register('namespaces', API.getNamespaces())
       .then(namespacesResponse => {
         const nameFilters = FilterSelected.getSelected().filter(f => f.category === FiltersAndSorts.nameFilter.title);
-        const allNamespaces: NamespaceInfo[] = namespacesResponse['data']
+        const allNamespaces: NamespaceInfo[] = namespacesResponse.data
           .filter(ns => {
             return nameFilters.length === 0 || nameFilters.some(f => ns.name.includes(f.value));
           })

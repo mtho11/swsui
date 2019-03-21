@@ -84,8 +84,8 @@ export const getNamespaceMetrics = (namespace: string, params: any) => {
 
 export const getErrorMsg = (msg: string, error: AxiosError) => {
   let errorMessage = msg;
-  if (error && error.response && error.response.data && error.response.data['error']) {
-    errorMessage = `${msg} Error: [ ${error.response.data['error']} ]`;
+  if (error && error.response && error.response.data && error.response.data.error) {
+    errorMessage = `${msg} Error: [ ${error.response.data.error} ]`;
   }
   return errorMessage;
 };

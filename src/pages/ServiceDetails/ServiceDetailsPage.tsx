@@ -140,7 +140,7 @@ class ServiceDetails extends React.Component<ServiceDetailsProps, ServiceDetails
       const dr = new DestinationRuleValidator(destinationRule);
       const formatValidation = dr.formatValidation();
 
-      const objectValidations = validations['destinationrule'][destinationRule.metadata.name];
+      const objectValidations = validations.destinationrule[destinationRule.metadata.name];
       if (
         formatValidation !== null &&
         !objectValidations.checks.some(check => check.message === formatValidation.message)

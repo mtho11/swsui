@@ -43,7 +43,7 @@ describe('#ServiceInfoRoutes render correctly with data', () => {
       if (!serviceName) {
         return;
       }
-      expect(selector.attribs['href']).toEqual(expectationData[serviceName]['href']);
+      expect(selector.attribs.href).toEqual(expectationData[serviceName].href);
     });
   });
 });
