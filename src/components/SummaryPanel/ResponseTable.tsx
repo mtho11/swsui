@@ -47,10 +47,10 @@ export class ResponseTable extends React.PureComponent<ResponseTableProps> {
           </thead>
           <tbody>
             {this.getRows(this.props.responses).map(row => (
-              <tr key={row['key']}>
-                <td>{row['code']}</td>
-                <td title={this.getTitle(row['flags'])}>{row['flags']}</td>
-                <td>{row['val']}</td>
+              <tr key={row.key}>
+                <td>{row.code}</td>
+                <td title={this.getTitle(row.flags)}>{row.flags}</td>
+                <td>{row.val}</td>
               </tr>
             ))}
           </tbody>

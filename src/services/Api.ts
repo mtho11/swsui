@@ -112,7 +112,7 @@ export const getNamespaceTls = (namespace: string) => {
 export const getIstioConfig = (namespace: string, objects: string[], validate: boolean) => {
   const params = objects && objects.length > 0 ? { objects: objects.join(',') } : {};
   if (validate) {
-    params['validate'] = validate;
+    params.validate = validate;
   }
   return newRequest<IstioConfigList>(HTTP_VERBS.GET, urls.istioConfig(namespace), params, {});
 };
@@ -378,7 +378,7 @@ export const getServiceDetail = (
 ): Promise<ServiceDetailsInfo> => {
   const params = {};
   if (validate) {
-    params['validate'] = true;
+    params.validate = true;
   }
   return newRequest<ServiceDetailsInfo>(HTTP_VERBS.GET, urls.service(namespace, service), params, {}).then(r => {
     const info: ServiceDetailsInfo = r.data;
@@ -401,8 +401,8 @@ export const getWorkload = (namespace: string, name: string) => {
 export const getErrorMsg = (msg: string, error: AxiosError) => {
   let errorMessage = msg;
   if (error && error.response) {
-    if (error.response.data && error.response.data['error']) {
-      errorMessage = `${msg}, Error: [ ${error.response.data['error']} ]`;
+    if (error.response.data && error.response.data.error) {
+      errorMessage = `${msg}, Error: [ ${error.response.data.error} ]`;
     } else if (error.response.statusText) {
       errorMessage = `${msg}, Error: [ ${error.response.statusText} ]`;
       if (error.response.status === 401) {
