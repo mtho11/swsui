@@ -84,7 +84,7 @@ class IstioConfigDetailsPage extends React.Component<RouteComponentProps<IstioCo
     // Hack to force redisplay of annotations after update
     // See https://github.com/securingsincity/react-ace/issues/300
     if (this.aceEditorRef.current) {
-      this.aceEditorRef.current!.editor.onChangeAnnotation();
+      this.aceEditorRef.current!['editor'].onChangeAnnotation();
     }
 
     if (this.props.match.params !== prevProps.match.params) {
