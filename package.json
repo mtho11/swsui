@@ -2,6 +2,7 @@
   "name": "@kiali/kiali-ui",
   "version": "1.22.0",
   "description": "React UI for [Kiali](https://github.com/kiali/kiali).",
+  "proxy": "http://localhost:60010/kiali",
   "keywords": [
     "istio service mesh",
     "kiali",
@@ -85,6 +86,7 @@
     "react-datepicker": "2.14.0",
     "react-dom": "16.13.1",
     "react-flexview": "4.0.3",
+    "react-modal": "3.11.2",
     "react-redux": "7.2.0",
     "react-resize-detector": "3.4.0",
     "react-router-dom": "5.0.1",

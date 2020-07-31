@@ -1,4 +1,5 @@
 import * as React from 'react';
+// import Modal from 'react-modal';
 import {
   Button,
   ButtonVariant,
@@ -213,6 +214,7 @@ export default class WorkloadPodLogs extends React.Component<WorkloadPodLogsProp
   }
 
   componentDidMount() {
+    // Modal.setAppElement('#logsCard');
     if (this.state.containerInfo) {
       const pod = this.props.pods[this.state.podValue!];
       this.fetchLogs(
@@ -255,7 +257,7 @@ export default class WorkloadPodLogs extends React.Component<WorkloadPodLogsProp
           <Grid style={{ padding: '10px 10px 0 10px', height: '100%' }}>
             <GridItem span={12}>
               <Card style={{ height: '100%' }}>
-                <CardBody>
+                <CardBody id="logsCard">
                   {/*we need two FullScreenLogModal components because you cant pass anything to modal.open() */}
                   <FullScreenLogModal
                     logText={WorkloadPodLogs.linesToString(this.state.filteredAppLogs)}

@@ -1,6 +1,7 @@
 import * as React from 'react';
+import ReactModal from 'react-modal';
 import { style } from 'typestyle';
-import { Modal, Toolbar, ToolbarGroup, ToolbarItem, Button, ButtonVariant, Tooltip } from '@patternfly/react-core';
+import { Toolbar, ToolbarGroup, ToolbarItem, Button, ButtonVariant, Tooltip } from '@patternfly/react-core';
 import { KialiIcon, defaultIconStyle } from 'config/KialiIcon';
 
 type FullScreenLogProps = {
@@ -13,10 +14,21 @@ type FullScreenLogState = {
   show: boolean;
 };
 
-const modalStyle = style({
-  width: '100',
-  height: '100%'
-});
+// const customStyles = {
+//   content : {
+//     top                   : '50%',
+//     left                  : '50%',
+//     right                 : 'auto',
+//     bottom                : 'auto',
+//     // marginRight           : '-50%',
+//     //transform             : 'translate(-50%, -50%)'
+//   }
+// };
+
+// const modalStyle = style({
+//   width: '100',
+//   height: '100%'
+// });
 
 const textAreaStyle = style({
   width: '100%',
@@ -49,6 +61,10 @@ export class FullScreenLogModal extends React.PureComponent<FullScreenLogProps, 
     this.setState({ show: false });
   };
 
+  afterOpenModal = () => {
+    console.log('Opening Modal!');
+  };
+
   renderToolbar = () => {
     return (
       <Toolbar>
@@ -76,16 +92,43 @@ export class FullScreenLogModal extends React.PureComponent<FullScreenLogProps, 
     }
 
     return (
-      <Modal
-        isSmall={false}
+      <ReactModal
         isOpen={this.state.show}
-        header={this.renderToolbar()}
-        title=""
-        className={modalStyle}
-        showClose={false}
+        onAfterOpen={this.afterOpenModal()}
+        parentSelector={() => document.body}
+        // style={customStyles}
+        style={{
+          // overlay: {
+          //   position: 'fixed',
+          //   top: 0,
+          //   left: 0,
+          //   right: 0,
+          //   bottom: 0,
+          //   backgroundColor: 'rgba(255, 255, 255, 0.75)'
+          // },
+          content: {
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            top: '0px',
+            left: '5px',
+            right: '5px',
+            bottom: '10px',
+            border: '1px solid #ccc',
+            zIndex: -200,
+            // background: 'green',
+            overflow: 'auto',
+            WebkitOverflowScrolling: 'touch',
+            borderRadius: '4px',
+            outline: 'none',
+            padding: '20px'
+          }
+        }}
+        ariaHideApp={false}
       >
+        {this.renderToolbar()}
         <textarea ref={this.textareaRef} value={this.props.logText} className={textAreaStyle} readOnly={true} />
-      </Modal>
+      </ReactModal>
     );
   }
 }
