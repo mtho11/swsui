@@ -1,34 +1,24 @@
 import * as React from 'react';
-import ReactModal from 'react-modal';
+import Popup from 'reactjs-popup';
 import { style } from 'typestyle';
-import { Toolbar, ToolbarGroup, ToolbarItem, Button, ButtonVariant, Tooltip } from '@patternfly/react-core';
+import { Toolbar, ToolbarGroup, ToolbarItem, Button, ButtonVariant } from '@patternfly/react-core';
 import { KialiIcon, defaultIconStyle } from 'config/KialiIcon';
 
 type FullScreenLogProps = {
   logText?: string;
   title: string;
   ref: React.RefObject<any>;
+  // trigger: JSX.Element | ((isOpen: boolean) => JSX.Element);
 };
 
 type FullScreenLogState = {
-  show: boolean;
+  open: boolean;
 };
 
-// const customStyles = {
-//   content : {
-//     top                   : '50%',
-//     left                  : '50%',
-//     right                 : 'auto',
-//     bottom                : 'auto',
-//     // marginRight           : '-50%',
-//     //transform             : 'translate(-50%, -50%)'
-//   }
-// };
-
-// const modalStyle = style({
-//   width: '100',
-//   height: '100%'
-// });
+const modalStyle = style({
+  width: '100%',
+  height: '100%'
+});
 
 const textAreaStyle = style({
   width: '100%',
@@ -50,15 +40,15 @@ export class FullScreenLogModal extends React.PureComponent<FullScreenLogProps, 
   constructor(props: FullScreenLogProps) {
     super(props);
     this.textareaRef = React.createRef();
-    this.state = { show: false };
+    this.state = { open: false };
   }
 
   open = () => {
-    this.setState({ show: true });
+    this.setState({ open: true });
   };
 
   close = () => {
-    this.setState({ show: false });
+    this.setState({ open: false });
   };
 
   afterOpenModal = () => {
@@ -75,11 +65,9 @@ export class FullScreenLogModal extends React.PureComponent<FullScreenLogProps, 
         </ToolbarGroup>
         <ToolbarGroup style={{ marginLeft: 'auto' }}>
           <ToolbarItem>
-            <Tooltip key="collapse_fs" position="top" content="Collapse full screen">
-              <Button variant={ButtonVariant.link} onClick={this.close} isInline>
-                <KialiIcon.Compress className={defaultIconStyle} />
-              </Button>
-            </Tooltip>
+            <Button variant={ButtonVariant.link} onClick={this.close} isInline>
+              <KialiIcon.Compress className={defaultIconStyle} />
+            </Button>
           </ToolbarItem>
         </ToolbarGroup>
       </Toolbar>
@@ -87,48 +75,39 @@ export class FullScreenLogModal extends React.PureComponent<FullScreenLogProps, 
   };
 
   render() {
-    if (!this.state.show || !this.props.logText) {
-      return null;
-    }
+    // if (!this.state.open || !this.props.logText) {
+    //   console.warn("Is Null");
+    //   return null;
+    // }
 
     return (
-      <ReactModal
-        isOpen={this.state.show}
-        onAfterOpen={this.afterOpenModal()}
-        parentSelector={() => document.body}
-        // style={customStyles}
-        style={{
-          // overlay: {
-          //   position: 'fixed',
-          //   top: 0,
-          //   left: 0,
-          //   right: 0,
-          //   bottom: 0,
-          //   backgroundColor: 'rgba(255, 255, 255, 0.75)'
-          // },
-          content: {
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-            top: '0px',
-            left: '5px',
-            right: '5px',
-            bottom: '10px',
-            border: '1px solid #ccc',
-            zIndex: -200,
-            // background: 'green',
-            overflow: 'auto',
-            WebkitOverflowScrolling: 'touch',
-            borderRadius: '4px',
-            outline: 'none',
-            padding: '20px'
-          }
-        }}
-        ariaHideApp={false}
+      <Popup
+        open={this.state.open}
+        onClose={this.close}
+        className={modalStyle}
+        closeOnEscape={true}
+        closeOnDocumentClick={false}
+        arrow={false}
+        position="center center"
+        modal
+        trigger={open => (
+          <Button variant={ButtonVariant.link} isInline>
+            {open} <KialiIcon.Expand className={defaultIconStyle} />
+          </Button>
+        )}
+        // trigger={
+        //   // <Tooltip key="expand_app_logs" position="top" content="Expand App logs full screen">
+        //   <Button variant={ButtonVariant.link} isInline>
+        //     <KialiIcon.Expand className={defaultIconStyle} />
+        //   </Button>
+        //   // </Tooltip>
+        // }
       >
-        {this.renderToolbar()}
-        <textarea ref={this.textareaRef} value={this.props.logText} className={textAreaStyle} readOnly={true} />
-      </ReactModal>
+        <>
+          {this.renderToolbar()}
+          <textarea ref={this.textareaRef} value={this.props.logText} className={textAreaStyle} readOnly={true} />
+        </>
+      </Popup>
     );
   }
 }

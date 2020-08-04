@@ -1,5 +1,4 @@
 import * as React from 'react';
-// import Modal from 'react-modal';
 import {
   Button,
   ButtonVariant,
@@ -214,7 +213,6 @@ export default class WorkloadPodLogs extends React.Component<WorkloadPodLogsProp
   }
 
   componentDidMount() {
-    // Modal.setAppElement('#logsCard');
     if (this.state.containerInfo) {
       const pod = this.props.pods[this.state.podValue!];
       this.fetchLogs(
@@ -257,18 +255,7 @@ export default class WorkloadPodLogs extends React.Component<WorkloadPodLogsProp
           <Grid style={{ padding: '10px 10px 0 10px', height: '100%' }}>
             <GridItem span={12}>
               <Card style={{ height: '100%' }}>
-                <CardBody id="logsCard">
-                  {/*we need two FullScreenLogModal components because you cant pass anything to modal.open() */}
-                  <FullScreenLogModal
-                    logText={WorkloadPodLogs.linesToString(this.state.filteredAppLogs)}
-                    title={this.props.pods[this.state.podValue!].name}
-                    ref={this.appFullScreenLogModalRef}
-                  />
-                  <FullScreenLogModal
-                    logText={WorkloadPodLogs.linesToString(this.state.filteredProxyLogs)}
-                    title="Istio Proxy Logs (sidecar)"
-                    ref={this.proxyFullScreenLogModalRef}
-                  />
+                <CardBody>
                   <Toolbar className={toolbar}>
                     <ToolbarGroup>
                       <ToolbarItem className={displayFlex}>
@@ -469,11 +456,12 @@ export default class WorkloadPodLogs extends React.Component<WorkloadPodLogsProp
               </Tooltip>
             </ToolbarItem>
             <ToolbarItem className={toolbarSpace}>
-              <Tooltip key="expand_app_logs" position="top" content="Expand App logs full screen">
-                <Button variant={ButtonVariant.link} onClick={this.openAppFullScreenLog} isInline>
-                  <KialiIcon.Expand className={defaultIconStyle} />
-                </Button>
-              </Tooltip>
+              {/*we need two FullScreenLogModal components because you cant pass anything to modal.open() */}
+              <FullScreenLogModal
+                logText={WorkloadPodLogs.linesToString(this.state.filteredAppLogs)}
+                title={this.props.pods[this.state.podValue!].name}
+                ref={this.appFullScreenLogModalRef}
+              />
             </ToolbarItem>
           </ToolbarGroup>
         </Toolbar>
@@ -510,11 +498,11 @@ export default class WorkloadPodLogs extends React.Component<WorkloadPodLogsProp
               </Tooltip>
             </ToolbarItem>
             <ToolbarItem className={toolbarSpace}>
-              <Tooltip key="expand_proxy_logs" position="top" content="Expand Istio proxy logs full screen">
-                <Button variant={ButtonVariant.link} onClick={this.openProxyFullScreenLog} isInline>
-                  <KialiIcon.Expand className={defaultIconStyle} />
-                </Button>
-              </Tooltip>
+              <FullScreenLogModal
+                logText={WorkloadPodLogs.linesToString(this.state.filteredProxyLogs)}
+                title="Istio Proxy Logs (sidecar)"
+                ref={this.proxyFullScreenLogModalRef}
+              />
             </ToolbarItem>
           </ToolbarGroup>
         </Toolbar>
@@ -689,14 +677,6 @@ export default class WorkloadPodLogs extends React.Component<WorkloadPodLogsProp
 
   private copyProxyLogCallback = (_text: string, _result: boolean) => {
     this.proxyLogsRef.current.select();
-  };
-
-  private openAppFullScreenLog = () => {
-    this.appFullScreenLogModalRef.current!.open();
-  };
-
-  private openProxyFullScreenLog = () => {
-    this.proxyFullScreenLogModalRef.current!.open();
   };
 
   private getContainerInfo = (pod: Pod): ContainerInfo => {
