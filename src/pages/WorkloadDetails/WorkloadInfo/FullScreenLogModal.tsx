@@ -43,35 +43,14 @@ export class FullScreenLogModal extends React.PureComponent<FullScreenLogProps, 
     this.state = { open: false };
   }
 
-  open = () => {
-    this.setState({ open: true });
-  };
-
   close = () => {
     this.setState({ open: false });
   };
 
   afterOpenModal = () => {
     console.log('Opening Modal!');
-  };
-
-  renderToolbar = () => {
-    return (
-      <Toolbar>
-        <ToolbarGroup>
-          <ToolbarItem>
-            <h2>{this.props.title}</h2>
-          </ToolbarItem>
-        </ToolbarGroup>
-        <ToolbarGroup style={{ marginLeft: 'auto' }}>
-          <ToolbarItem>
-            <Button variant={ButtonVariant.link} onClick={this.close} isInline>
-              <KialiIcon.Compress className={defaultIconStyle} />
-            </Button>
-          </ToolbarItem>
-        </ToolbarGroup>
-      </Toolbar>
-    );
+    this.setState({ open: true });
+    // this.textareaRef.current.scrollTop = this.textareaRef.current.scrollHeight;
   };
 
   render() {
@@ -84,29 +63,40 @@ export class FullScreenLogModal extends React.PureComponent<FullScreenLogProps, 
       <Popup
         open={this.state.open}
         onClose={this.close}
+        onOpen={this.afterOpenModal}
         className={modalStyle}
         closeOnEscape={true}
         closeOnDocumentClick={false}
         arrow={false}
         position="center center"
+        contentStyle={{ width: '100%', height: '100%', zIndex: 500 }}
         modal
-        trigger={open => (
+        trigger={() => (
           <Button variant={ButtonVariant.link} isInline>
-            {open} <KialiIcon.Expand className={defaultIconStyle} />
+            <KialiIcon.Expand className={defaultIconStyle} />
           </Button>
         )}
-        // trigger={
-        //   // <Tooltip key="expand_app_logs" position="top" content="Expand App logs full screen">
-        //   <Button variant={ButtonVariant.link} isInline>
-        //     <KialiIcon.Expand className={defaultIconStyle} />
-        //   </Button>
-        //   // </Tooltip>
-        // }
       >
-        <>
-          {this.renderToolbar()}
-          <textarea ref={this.textareaRef} value={this.props.logText} className={textAreaStyle} readOnly={true} />
-        </>
+        {(close, _isOpen) => (
+          <>
+            <Toolbar>
+              <ToolbarGroup>
+                <ToolbarItem>
+                  <h2 style={{ fontWeight: 'bold' }}>Logs for: {this.props.title}</h2>
+                </ToolbarItem>
+              </ToolbarGroup>
+              <ToolbarGroup style={{ marginLeft: 'auto' }}>
+                <ToolbarItem>
+                  <Button variant={ButtonVariant.link} onClick={close} isInline>
+                    <KialiIcon.Compress className={defaultIconStyle} />
+                  </Button>
+                </ToolbarItem>
+              </ToolbarGroup>
+            </Toolbar>
+
+            <textarea ref={this.textareaRef} value={this.props.logText} className={textAreaStyle} readOnly={true} />
+          </>
+        )}
       </Popup>
     );
   }
