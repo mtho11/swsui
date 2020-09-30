@@ -14,16 +14,19 @@ import { RenderHeader } from '../../components/Nav/Page';
 import { serverConfig } from '../../config/ServerConfig';
 import TrafficDetails from '../../components/Metrics/TrafficDetails';
 import WorkloadPodLogs from './WorkloadInfo/WorkloadPodLogs';
-import { DurationInSeconds } from '../../types/Common';
+import { DurationInSeconds, TimeRange } from '../../types/Common';
 import { KialiAppState } from '../../store/Store';
 import { durationSelector } from '../../store/Selectors';
 import ParameterizedTabs, { activeTab } from '../../components/Tab/Tabs';
 import TracesComponent from 'components/JaegerIntegration/TracesComponent';
 import { JaegerInfo } from 'types/JaegerInfo';
+import { retrieveTimeRange } from '../../components/Time/TimeRangeHelper';
+import * as MetricsHelper from '../../components/Metrics/Helper';
 
 type WorkloadDetailsState = {
   workload?: Workload;
   currentTab: string;
+  timeRange: TimeRange;
 };
 
 type WorkloadDetailsPageProps = RouteComponentProps<WorkloadId> & {
@@ -47,7 +50,8 @@ const nextTabIndex = 6;
 class WorkloadDetails extends React.Component<WorkloadDetailsPageProps, WorkloadDetailsState> {
   constructor(props: WorkloadDetailsPageProps) {
     super(props);
-    this.state = { currentTab: activeTab(tabName, defaultTab) };
+    const timeRange = retrieveTimeRange() || MetricsHelper.defaultMetricsDuration;
+    this.state = { currentTab: activeTab(tabName, defaultTab), timeRange: timeRange };
   }
 
   componentDidMount(): void {
@@ -107,6 +111,7 @@ class WorkloadDetails extends React.Component<WorkloadDetailsPageProps, Workload
           <WorkloadPodLogs
             namespace={this.props.match.params.namespace}
             pods={this.state.workload!.pods}
+            timeRange={this.state.timeRange}
             duration={this.props.duration}
           />
         ) : (

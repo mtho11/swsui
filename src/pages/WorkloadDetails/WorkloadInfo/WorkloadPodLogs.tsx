@@ -18,25 +18,46 @@ import { Pod, PodLogs } from '../../../types/IstioObjects';
 import { getPodLogs, Response } from '../../../services/Api';
 import { CancelablePromise, makeCancelablePromise } from '../../../utils/CancelablePromises';
 import { ToolbarDropdown } from '../../../components/ToolbarDropdown/ToolbarDropdown';
-import { DurationInSeconds, LogLines } from '../../../types/Common';
+import {
+  BoundsInMilliseconds,
+  DurationInSeconds,
+  LogLines,
+  TimeInMilliseconds,
+  TimeRange
+} from '../../../types/Common';
 import { RenderComponentScroll } from '../../../components/Nav/Page';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Splitter from 'm-react-splitters';
 import { KialiIcon, defaultIconStyle } from '../../../config/KialiIcon';
 import { FullScreenLogModal } from './FullScreenLogModal';
-import { DurationDropdownContainer } from '../../../components/DurationDropdown/DurationDropdown';
 import RefreshContainer from '../../../components/Refresh/Refresh';
 import { RightActionBar } from '../../../components/RightActionBar/RightActionBar';
+import TimeRangeComponent from '../../../components/Time/TimeRangeComponent';
+import moment from 'moment';
 
 export interface WorkloadPodLogsProps {
   namespace: string;
   pods: Pod[];
   duration: DurationInSeconds;
+  timeRange?: TimeRange;
 }
 
 interface ContainerInfo {
   container: string;
   containerOptions: string[];
+}
+
+type LogLineEntry = string;
+
+// for filtering by start/end time range
+class TimeRangeLogLine {
+  constructor(timeInMillis: TimeInMilliseconds, logLineEntry: LogLineEntry) {
+    this.timeInMilliseconds = timeInMillis;
+    this.logLineEntry = logLineEntry;
+  }
+
+  timeInMilliseconds: TimeInMilliseconds; // give us a field to filter log lines on
+  logLineEntry: LogLineEntry;
 }
 
 type TextAreaPosition = 'left' | 'right' | 'top' | 'bottom';
@@ -62,6 +83,7 @@ interface WorkloadPodLogsState {
   showLogValue: string;
   sideBySideOrientation: boolean;
   tailLines: number;
+  timeRange?: TimeRange;
   useRegex: boolean;
 }
 
@@ -179,6 +201,7 @@ export default class WorkloadPodLogs extends React.Component<WorkloadPodLogsProp
         showClearShowLogButton: false,
         showLogValue: '',
         tailLines: TailLinesDefault,
+        timeRange: undefined,
         useRegex: false
       };
       return;
@@ -230,8 +253,9 @@ export default class WorkloadPodLogs extends React.Component<WorkloadPodLogsProp
     const updateContainerInfo = this.state.containerInfo && this.state.containerInfo !== prevState.containerInfo;
     const updateContainer = newContainer && newContainer !== prevContainer;
     const updateDuration = this.props.duration && this.props.duration !== prevProps.duration;
+    const updateTimeRange = this.props.timeRange && this.props.timeRange !== prevProps.timeRange;
     const updateTailLines = this.state.tailLines && prevState.tailLines !== this.state.tailLines;
-    if (updateContainerInfo || updateContainer || updateDuration || updateTailLines) {
+    if (updateContainerInfo || updateContainer || updateDuration || updateTimeRange || updateTailLines) {
       const pod = this.props.pods[this.state.podValue!];
       this.fetchLogs(this.props.namespace, pod.name, newContainer!, this.state.tailLines, this.props.duration);
     }
@@ -251,7 +275,12 @@ export default class WorkloadPodLogs extends React.Component<WorkloadPodLogsProp
     return (
       <>
         <RightActionBar>
-          <DurationDropdownContainer id="workload-pod-logging-duration-dropdown" prefix="Last" />
+          <TimeRangeComponent
+            range={this.state.timeRange}
+            onChanged={this.onTimeFrameChanged}
+            tooltip={'Time range'}
+            allowCustom={true}
+          />
           <RefreshContainer id="workload-pod-logging-refresh" handleRefresh={this.handleRefresh} hideLabel={true} />
         </RightActionBar>
         <RenderComponentScroll key={this.state.sideBySideOrientation ? 'vertical' : 'horizontal'}>
@@ -583,6 +612,59 @@ export default class WorkloadPodLogs extends React.Component<WorkloadPodLogsProp
     }
   };
 
+  private onTimeFrameChanged = (timeRange: TimeRange) => {
+    console.warn('New timeRange selected: ');
+    console.dir(timeRange);
+    // range is 'object' type when we are a BoundsInMilliseconds and not a DurationInSeconds
+    if (typeof timeRange === 'object') {
+      console.warn('TimeRange object');
+      const pod = this.props.pods[this.state.podValue!];
+      this.fetchLogs(
+        this.props.namespace,
+        pod.name,
+        this.state.containerInfo!.container,
+        this.state.tailLines, // ALL Lines
+        0,
+        timeRange
+      );
+    }
+  };
+
+  private filterLogsByTimeRange = (timeRange: BoundsInMilliseconds, rawLogs?: LogLines): LogLines | undefined => {
+    console.warn('*** Filter by time range');
+    console.warn(moment(timeRange.from).format() + ' -> ' + moment(timeRange.to).format());
+    if (rawLogs) {
+      // 1) Create a data structure to allow filtering by time
+      // 2) Filter by time range
+      // 3) convert special filter data structure back to displayable structure
+      const timeRangeLogLines: LogLines = rawLogs
+        .map((line: LogLineEntry) => {
+          return new TimeRangeLogLine(this.extractDate(line), line);
+        })
+        .filter((timeRangeLogLine: TimeRangeLogLine) => {
+          if (timeRange.to) {
+            return timeRangeLogLine.timeInMilliseconds >= timeRange.from &&
+              timeRangeLogLine.timeInMilliseconds <= timeRange.to
+              ? timeRangeLogLine.logLineEntry
+              : undefined;
+          } else {
+            return timeRangeLogLine.timeInMilliseconds >= timeRange.from ? timeRangeLogLine.logLineEntry : undefined;
+          }
+        })
+        .map(line => {
+          return line.logLineEntry;
+        });
+      return timeRangeLogLines;
+    } else {
+      return undefined;
+    }
+  };
+
+  private extractDate = (line: LogLineEntry): TimeInMilliseconds => {
+    const datePart = line.substring(0, 30);
+    return moment(datePart).milliseconds();
+  };
+
   private filterLogs = (rawLogs: LogLines, showValue: string, hideValue: string): LogLines => {
     let filteredLogs = rawLogs;
 
@@ -713,7 +795,8 @@ export default class WorkloadPodLogs extends React.Component<WorkloadPodLogsProp
     podName: string,
     container: string,
     tailLines: number,
-    duration: DurationInSeconds
+    duration: DurationInSeconds,
+    boundsInMilliseconds?: BoundsInMilliseconds
   ) => {
     const sinceTime = Math.floor(Date.now() / 1000) - duration;
     const appPromise: Promise<Response<PodLogs>> = getPodLogs(namespace, podName, container, tailLines, sinceTime);
@@ -726,16 +809,25 @@ export default class WorkloadPodLogs extends React.Component<WorkloadPodLogsProp
     );
     this.loadAppLogsPromise = makeCancelablePromise(Promise.all([appPromise]));
     this.loadProxyLogsPromise = makeCancelablePromise(Promise.all([proxyPromise]));
-
+    console.warn('*** Fetching Logs');
     this.loadAppLogsPromise.promise
       .then(response => {
         const rawAppLogs = WorkloadPodLogs.stringToLines(response[0].data.logs as string, tailLines);
-        const filteredAppLogs = this.filterLogs(rawAppLogs, this.state.showLogValue, this.state.hideLogValue);
+        console.warn('App log length: ' + rawAppLogs.length);
+        let filteredAppLogs: LogLines | undefined = this.filterLogs(
+          rawAppLogs,
+          this.state.showLogValue,
+          this.state.hideLogValue
+        );
+        if (boundsInMilliseconds) {
+          filteredAppLogs = this.filterLogsByTimeRange(boundsInMilliseconds, filteredAppLogs);
+        }
 
         this.setState({
           loadingAppLogs: false,
           rawAppLogs: rawAppLogs,
-          filteredAppLogs: filteredAppLogs
+          filteredAppLogs: filteredAppLogs,
+          timeRange: boundsInMilliseconds
         });
         this.appLogsRef.current.scrollTop = this.appLogsRef.current.scrollHeight;
         return;
@@ -756,8 +848,14 @@ export default class WorkloadPodLogs extends React.Component<WorkloadPodLogsProp
     this.loadProxyLogsPromise.promise
       .then(response => {
         const rawProxyLogs = WorkloadPodLogs.stringToLines(response[0].data.logs as string, tailLines);
-        const filteredProxyLogs = this.filterLogs(rawProxyLogs, this.state.showLogValue, this.state.hideLogValue);
-
+        let filteredProxyLogs: LogLines | undefined = this.filterLogs(
+          rawProxyLogs,
+          this.state.showLogValue,
+          this.state.hideLogValue
+        );
+        if (boundsInMilliseconds) {
+          filteredProxyLogs = this.filterLogsByTimeRange(boundsInMilliseconds, filteredProxyLogs);
+        }
         this.setState({
           loadingProxyLogs: false,
           rawProxyLogs: rawProxyLogs,
