@@ -2,6 +2,7 @@ import * as React from 'react';
 import { style } from 'typestyle';
 import { Modal, Toolbar, ToolbarGroup, ToolbarItem, Button, ButtonVariant, Tooltip } from '@patternfly/react-core';
 import { KialiIcon, defaultIconStyle } from 'config/KialiIcon';
+import screenfull, { Screenfull } from 'screenfull';
 
 type FullScreenLogProps = {
   logText?: string;
@@ -41,12 +42,26 @@ export class FullScreenLogModal extends React.PureComponent<FullScreenLogProps, 
     this.state = { show: false };
   }
 
+  componentDidMount() {
+    const myScreenful = screenfull as Screenfull; // this casting was necessary
+    if (myScreenful.isEnabled) {
+      myScreenful.onchange((_event: Event) => {
+        if (!myScreenful.isFullscreen) {
+          this.setState({ show: false });
+        }
+      });
+    }
+  }
+
   open = () => {
     this.setState({ show: true });
   };
 
   close = () => {
     this.setState({ show: false });
+    if (screenfull.isEnabled) {
+      screenfull.exit();
+    }
   };
 
   componentDidUpdate(
