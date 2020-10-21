@@ -50,6 +50,7 @@ export class FullScreenLogModal extends React.PureComponent<FullScreenLogProps, 
       });
       sf.on('error', () => {
         this.setState({ show: false });
+
       });
     }
   }
